@@ -1,4 +1,7 @@
-﻿using P1_SECCL_API.Classes;
+﻿using System;
+using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Services;
 using System.Text.Json.Nodes;
 
 public class Program
@@ -10,15 +13,25 @@ public class Program
 
     static void Main(string[] args)
     {
-        Authentication.AuthenticationToken token;
-        token = SECCL.GetAuthenticationToken(_connectionString, _firmID, _userID, _password);
+        //Authentication.AuthenticationToken token;
+        //token = SECCL.GetAuthenticationToken(_connectionString, _firmID, _userID, _password);
 
-        if(token == null)
-        {
-            Console.WriteLine("Not authorised");
-            return;
-        }
+        //if(token == null)
+        //{
+        //    Console.WriteLine("Not authorised");
+        //    return;
+        //}
 
-        SECCL.GetFirmPortfolios(_connectionString, _firmID, token);
+        //SECCL.GetFirmPortfolios(_connectionString, _firmID, token);
+        var serviceProvider = new ServiceCollection()
+            .AddHttpClient()
+            .AddTransient<IAPIService, APIService>()
+            .BuildServiceProvider();
+
+        var apiService = serviceProvider.GetRequiredService<IAPIService>();
+
+        var data = apiService.GetResponse(_connectionString, "authenticate");
+
+        Console.WriteLine(data.Data);
     }
 }
