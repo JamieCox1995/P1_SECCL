@@ -31,7 +31,8 @@ namespace Services.DataHandling
 
             // Calling the Post Response with the connection string, endpoint, and constructed json body.
             var data = apiService.PostResponse(_route, "authenticate", jsonBody);
-            Console.WriteLine(data.Data);
+            
+            if(Program.OutputToConsole) Console.WriteLine(data.Data);
 
             // Deserializing the data
             Authentication.AuthData authData = JsonConvert.DeserializeObject<Authentication.AuthData>(data.Data.ToString());
@@ -56,8 +57,7 @@ namespace Services.DataHandling
                 { "api-token", _AuthenticationToken }
             });
 
-            Console.WriteLine(data.Data);
-
+            if (Program.OutputToConsole) Console.WriteLine(data.Data);
 
             List<Portfolio.PorfolioAccount> accounts = JsonConvert.DeserializeObject<List<Portfolio.PorfolioAccount>>(data.Data.ToString());
 

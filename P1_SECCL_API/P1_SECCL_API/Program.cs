@@ -11,6 +11,8 @@ public class Program
     private const string _userID = "nelahi6642@4tmail.net";
     private const string _password = "DemoBDM1";
 
+    public static bool OutputToConsole = false;
+
     static void Main(string[] args)
     {
         var services = new ServiceCollection().AddHttpClient().AddTransient<IMiddleware, Middleware>().BuildServiceProvider();
