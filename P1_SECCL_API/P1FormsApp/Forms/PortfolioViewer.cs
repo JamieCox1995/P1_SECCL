@@ -32,7 +32,15 @@ namespace P1FormsApp
         private Label lblSurname;
         private TextBox txtFirstName;
         private Label lblFirstName;
-        private int _selectedPortfolioIndex = 0;
+        private Label lblClientType;
+        private TextBox txtClientType;
+        private TextBox txtCurrency;
+        private Label lblCurrency;
+        private TextBox txtLanguage;
+        private Label lblLanguage;
+        private TextBox txtStatus;
+        private Label lblStatus;
+        private int _selectedPortfolioIndex = -1;
 
         public PortfolioViewer(IMiddleware _Middleware)
         {
@@ -41,16 +49,9 @@ namespace P1FormsApp
             InitializeComponent();
             InitializeListners();
 
-            _authToken = _middleware.AuthenticateSession(_firmID, _userID, _password);
-
-            // On load, we want to call the middleware to get the list of portfolios and bind them to the list view.
-            _accounts = _middleware.GetPortfoliosForFirm(_firmID, _authToken.Token);
-
-            // Iterating over all of the accounts and adding them to the list view to be displayed.
-            foreach (Portfolio.PorfolioAccount account in _accounts)
-            {
-                lvPortfolios.Items.Add(account.Name);
-            }
+            _authToken = _middleware.AuthenticateSession(_firmID, _userID, _password);    
+            
+            LoadPorfolios();
         }
 
         private void InitializeListners()
@@ -77,15 +78,26 @@ namespace P1FormsApp
 
             txtFirstName.Text = summary.FirstName;
             txtSurname.Text = summary.Surname;
+
+            txtClientType.Text = summary.ClientType;
+
+            txtLanguage.Text = summary.Language;
+            txtCurrency.Text = summary.Currency;
+            txtStatus.Text = summary.Status;
         }
 
         private void PortfolioViewer_Load(object sender, EventArgs e)
+        {
+            LoadPorfolios();
+        }
+
+        private void LoadPorfolios()
         {
             // On load, we want to call the middleware to get the list of portfolios and bind them to the list view.
             _accounts = _middleware.GetPortfoliosForFirm(_firmID, _authToken.Token);
 
             // Iterating over all of the accounts and adding them to the list view to be displayed.
-            foreach(Portfolio.PorfolioAccount account in _accounts)
+            foreach (Portfolio.PorfolioAccount account in _accounts)
             {
                 lvPortfolios.Items.Add(account.Name);
             }
@@ -95,11 +107,19 @@ namespace P1FormsApp
         {
             this.lvPortfolios = new System.Windows.Forms.ListView();
             this.gbSelected = new System.Windows.Forms.GroupBox();
+            this.txtCurrency = new System.Windows.Forms.TextBox();
+            this.lblCurrency = new System.Windows.Forms.Label();
+            this.txtLanguage = new System.Windows.Forms.TextBox();
+            this.lblLanguage = new System.Windows.Forms.Label();
+            this.txtClientType = new System.Windows.Forms.TextBox();
+            this.lblClientType = new System.Windows.Forms.Label();
             this.txtSurname = new System.Windows.Forms.TextBox();
             this.lblSurname = new System.Windows.Forms.Label();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.lblFirstName = new System.Windows.Forms.Label();
             this.gbSummary = new System.Windows.Forms.GroupBox();
+            this.txtStatus = new System.Windows.Forms.TextBox();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.gbSelected.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -113,6 +133,14 @@ namespace P1FormsApp
             // 
             // gbSelected
             // 
+            this.gbSelected.Controls.Add(this.txtStatus);
+            this.gbSelected.Controls.Add(this.lblStatus);
+            this.gbSelected.Controls.Add(this.txtCurrency);
+            this.gbSelected.Controls.Add(this.lblCurrency);
+            this.gbSelected.Controls.Add(this.txtLanguage);
+            this.gbSelected.Controls.Add(this.lblLanguage);
+            this.gbSelected.Controls.Add(this.txtClientType);
+            this.gbSelected.Controls.Add(this.lblClientType);
             this.gbSelected.Controls.Add(this.txtSurname);
             this.gbSelected.Controls.Add(this.lblSurname);
             this.gbSelected.Controls.Add(this.txtFirstName);
@@ -123,6 +151,57 @@ namespace P1FormsApp
             this.gbSelected.TabIndex = 1;
             this.gbSelected.TabStop = false;
             this.gbSelected.Text = "Selected Portfolio";
+            // 
+            // txtCurrency
+            // 
+            this.txtCurrency.Enabled = false;
+            this.txtCurrency.Location = new System.Drawing.Point(74, 86);
+            this.txtCurrency.Name = "txtCurrency";
+            this.txtCurrency.Size = new System.Drawing.Size(58, 23);
+            this.txtCurrency.TabIndex = 9;
+            // 
+            // lblCurrency
+            // 
+            this.lblCurrency.AutoSize = true;
+            this.lblCurrency.Location = new System.Drawing.Point(74, 68);
+            this.lblCurrency.Name = "lblCurrency";
+            this.lblCurrency.Size = new System.Drawing.Size(58, 15);
+            this.lblCurrency.TabIndex = 8;
+            this.lblCurrency.Text = "Currency:";
+            // 
+            // txtLanguage
+            // 
+            this.txtLanguage.Enabled = false;
+            this.txtLanguage.Location = new System.Drawing.Point(6, 86);
+            this.txtLanguage.Name = "txtLanguage";
+            this.txtLanguage.Size = new System.Drawing.Size(62, 23);
+            this.txtLanguage.TabIndex = 7;
+            // 
+            // lblLanguage
+            // 
+            this.lblLanguage.AutoSize = true;
+            this.lblLanguage.Location = new System.Drawing.Point(6, 68);
+            this.lblLanguage.Name = "lblLanguage";
+            this.lblLanguage.Size = new System.Drawing.Size(62, 15);
+            this.lblLanguage.TabIndex = 6;
+            this.lblLanguage.Text = "Language:";
+            // 
+            // txtClientType
+            // 
+            this.txtClientType.Enabled = false;
+            this.txtClientType.Location = new System.Drawing.Point(313, 37);
+            this.txtClientType.Name = "txtClientType";
+            this.txtClientType.Size = new System.Drawing.Size(100, 23);
+            this.txtClientType.TabIndex = 5;
+            // 
+            // lblClientType
+            // 
+            this.lblClientType.AutoSize = true;
+            this.lblClientType.Location = new System.Drawing.Point(313, 19);
+            this.lblClientType.Name = "lblClientType";
+            this.lblClientType.Size = new System.Drawing.Size(68, 15);
+            this.lblClientType.TabIndex = 4;
+            this.lblClientType.Text = "Client Type:";
             // 
             // txtSurname
             // 
@@ -166,6 +245,23 @@ namespace P1FormsApp
             this.gbSummary.TabIndex = 2;
             this.gbSummary.TabStop = false;
             this.gbSummary.Text = "Portfolio Summary";
+            // 
+            // txtStatus
+            // 
+            this.txtStatus.Enabled = false;
+            this.txtStatus.Location = new System.Drawing.Point(313, 86);
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.Size = new System.Drawing.Size(100, 23);
+            this.txtStatus.TabIndex = 11;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(313, 68);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(42, 15);
+            this.lblStatus.TabIndex = 10;
+            this.lblStatus.Text = "Status:";
             // 
             // PortfolioViewer
             // 

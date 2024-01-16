@@ -59,6 +59,13 @@ namespace P1_SECCL_API.Classes
         public class PortfolioPosition
         {
             public string PositionType;
+            public string ISIN;
+            public string AssetID;
+            public string AssetName;
+            public decimal Quantity;
+            public decimal BookValue;
+            public decimal TransferBookValue;
+            public decimal NonTransferBookValue;
             public string Currency;
             public decimal CurrentValue;
             public decimal OpeningValue;
@@ -66,6 +73,9 @@ namespace P1_SECCL_API.Classes
             public decimal GrowthPercent;
             public decimal AdjustedGrowth;
             public decimal AdjustedGrowthPercent;
+            public decimal CurrentPrice;
+            public string CurrentPriceDate;
+            public decimal MinimumTransferUnit;
             public decimal Allocation;
         }
 
@@ -82,6 +92,8 @@ namespace P1_SECCL_API.Classes
             public string Currency;
             public string WrapperType;
             public int NodeID;
+            public string assetAllocationID;
+            public string AssetAllocationName;
             public string Status;
             public bool RecurringPayment;
             public WrapperDetail WrapperDetail;
@@ -111,6 +123,8 @@ namespace P1_SECCL_API.Classes
             public bool Trust;
             public string ClientProductId;
             public string SchemeProductId;
+            public string assetAllocationID;
+            public string AssetAllocationName;
             public string ProductStatus;
         }
 
