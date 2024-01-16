@@ -52,7 +52,7 @@ namespace Services.DataHandling
             var apiService = serviceProvider.GetRequiredService<IAPIService>();
 
             // Calling the Post Response with the connection string, endpoint, and constructed json body.
-            var data = apiService.GetResponse(_route, $"portfolio/{_FirmID}", new Dictionary<string, string>
+            var data = apiService.GetResponse(_route, $"portfolio/{_FirmID}/", new Dictionary<string, string>
             {
                 { "api-token", _AuthenticationToken }
             });

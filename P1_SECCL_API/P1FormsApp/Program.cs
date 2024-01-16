@@ -11,13 +11,17 @@ namespace P1FormsApp
         [STAThread]
         static void Main()
         {
-            var services = new ServiceCollection().AddHttpClient().AddTransient<IMiddleware, Middleware>().BuildServiceProvider();
+            // Setting up the service for the Middleware dependency injection.
+            var services = new ServiceCollection()
+                .AddHttpClient()                                // Seeing as this is using a HTTP client to make API calls, we need to add it to the ServiceProvider. Otherwise it will crash.
+                .AddTransient<IMiddleware, Middleware>().
+                BuildServiceProvider();
 
+            // Getting the service for our actual middleware implementation.
             var apiService = services.GetRequiredService<IMiddleware>();
 
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            // Now we can pass it through to our Form, so that we can display all the magic.
             Application.Run(new PortfolioViewer(apiService));
         }
     }

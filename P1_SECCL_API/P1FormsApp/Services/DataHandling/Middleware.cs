@@ -15,6 +15,13 @@ namespace Services.DataHandling
     {
         private const string _route = "http://pfolio-api-staging.seccl.tech";
 
+        /// <summary>
+        /// Calls the Authentication API to get a valid AuthToken for our session. This MUST be called prior to any other API calls.
+        /// </summary>
+        /// <param name="_FirmID">Generated ID for our Firm</param>
+        /// <param name="_UserID">User ID that was generated for the SECCL API</param>
+        /// <param name="_Password">Its a password for the account</param>
+        /// <returns></returns>
         public Authentication.AuthenticationToken AuthenticateSession(string _FirmID, string _UserID, string _Password)
         {
             // Constructing a JSON string from the above parameters which we can passthrough to the API Service.
@@ -38,6 +45,12 @@ namespace Services.DataHandling
             return new Authentication.AuthenticationToken(authData.Token, authData.UserName); ;
         }
 
+        /// <summary>
+        /// Loads all of the portfolios for a given FirmID. This gives portfolios at a header level.
+        /// </summary>
+        /// <param name="_FirmID">Firm ID that we would like to load a list of all of the portfolios for.</param>
+        /// <param name="_AuthenticationToken">*REQUIRED* Valid Authentication Token to all the APIs to validate a correct session.</param>
+        /// <returns></returns>
         public List<Portfolio.PorfolioAccount> GetPortfoliosForFirm(string _FirmID, string _AuthenticationToken)
         {
             // Creating the Service Provider which can handle HttpClient
@@ -60,6 +73,14 @@ namespace Services.DataHandling
             return accounts;
         }
 
+
+        /// <summary>
+        /// Loads a specific portfolio account for a Firm. This gives the account in more detail.
+        /// </summary>
+        /// <param name="_FirmID">Firm ID associated with the portfolio account</param>
+        /// <param name="_ID">ID for the specific portfolio account we want to load</param>
+        /// <param name="_AuthenticationToken">*REQUIRED* Valid Authentication Token to all the APIs to validate a correct session.</param>
+        /// <returns></returns>
         public Portfolio.PortfolioSummary GetPortfoliosSummary(string _FirmID, string _ID, string _AuthenticationToken)
         {
             // Creating the Service Provider which can handle HttpClient

@@ -25,6 +25,7 @@ namespace P1FormsApp
 
         // Keeping a global list of accounts, so that we can do some on selected item stuff.
         private List<Portfolio.PorfolioAccount> _accounts;
+        
         private ListView lvPortfolios;
         private GroupBox gbSelected;
         private GroupBox gbSummary;
@@ -40,25 +41,45 @@ namespace P1FormsApp
         private Label lblLanguage;
         private TextBox txtStatus;
         private Label lblStatus;
+        private TextBox txtPortfolioCount;
+        private Label lblPortfolioCount;
+        private Label lblFirmAverage;
+        private TextBox txtAverageValue;
+
         private int _selectedPortfolioIndex = -1;
 
         public PortfolioViewer(IMiddleware _Middleware)
         {
+            // Assigning our middleware so that we can make calls to get data.
             _middleware = _Middleware;
 
             InitializeComponent();
+            // Once all of the components have been initialized, we can start to set up the event listeners we want.
             InitializeListners();
 
+            // Now we want to Authenicate our session, so that we can make other API calls.
             _authToken = _middleware.AuthenticateSession(_firmID, _userID, _password);    
             
+            // Loading the list of Portfolios to be displayed to the user.
             LoadPorfolios();
+
+            // Based off of the Portfolios we have just loaded, we want to bind the overall summary for the account.
+            BindFirmSummary();
         }
 
+        /// <summary>
+        /// Initializing any event listeners that we want to Form components.
+        /// </summary>
         private void InitializeListners()
         {
             lvPortfolios.ItemSelectionChanged += LvPortfolios_ItemSelectionChanged;
         }
 
+        /// <summary>
+        /// On Click event handler for when an item is clicked in the List View of Portfolios.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LvPortfolios_ItemSelectionChanged(object? sender, ListViewItemSelectionChangedEventArgs e)
         {
             // If the new selected item is the same as the previous selected index, we do not want to continue with the method.
@@ -73,7 +94,7 @@ namespace P1FormsApp
             // Getting the portfolio at the index we have selected from the accounts stored in memory. We dont want to have to call APIs unless we really need to.
             Portfolio.PorfolioAccount selectedAccount = _accounts[_selectedPortfolioIndex];
 
-            // TODO: Updating the information for the selected account.
+            // Updating the information for the selected account.
             Portfolio.PortfolioSummary summary = _middleware.GetPortfoliosSummary(_firmID, selectedAccount.ID, _authToken.Token);
 
             txtFirstName.Text = summary.FirstName;
@@ -86,11 +107,21 @@ namespace P1FormsApp
             txtStatus.Text = summary.Status;
         }
 
+        /// <summary>
+        /// Form Event called when this Form is successfully loaded.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PortfolioViewer_Load(object sender, EventArgs e)
         {
             LoadPorfolios();
+
+            BindFirmSummary();
         }
 
+        /// <summary>
+        /// Loads the list of Porfolios for the Firm ID.
+        /// </summary>
         private void LoadPorfolios()
         {
             // On load, we want to call the middleware to get the list of portfolios and bind them to the list view.
@@ -103,10 +134,23 @@ namespace P1FormsApp
             }
         }
 
+        /// <summary>
+        /// Bind the Summary section of the form for the Firm ID.
+        /// </summary>
+        private void BindFirmSummary()
+        {
+            txtPortfolioCount.Text = _accounts.Count.ToString();
+        }
+
+        /// <summary>
+        /// Generic Form method which initializes all of the items we have added to the form.
+        /// </summary>
         private void InitializeComponent()
         {
             this.lvPortfolios = new System.Windows.Forms.ListView();
             this.gbSelected = new System.Windows.Forms.GroupBox();
+            this.txtStatus = new System.Windows.Forms.TextBox();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.txtCurrency = new System.Windows.Forms.TextBox();
             this.lblCurrency = new System.Windows.Forms.Label();
             this.txtLanguage = new System.Windows.Forms.TextBox();
@@ -118,9 +162,12 @@ namespace P1FormsApp
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.lblFirstName = new System.Windows.Forms.Label();
             this.gbSummary = new System.Windows.Forms.GroupBox();
-            this.txtStatus = new System.Windows.Forms.TextBox();
-            this.lblStatus = new System.Windows.Forms.Label();
+            this.txtPortfolioCount = new System.Windows.Forms.TextBox();
+            this.lblPortfolioCount = new System.Windows.Forms.Label();
+            this.lblFirmAverage = new System.Windows.Forms.Label();
+            this.txtAverageValue = new System.Windows.Forms.TextBox();
             this.gbSelected.SuspendLayout();
+            this.gbSummary.SuspendLayout();
             this.SuspendLayout();
             // 
             // lvPortfolios
@@ -151,6 +198,23 @@ namespace P1FormsApp
             this.gbSelected.TabIndex = 1;
             this.gbSelected.TabStop = false;
             this.gbSelected.Text = "Selected Portfolio";
+            // 
+            // txtStatus
+            // 
+            this.txtStatus.Enabled = false;
+            this.txtStatus.Location = new System.Drawing.Point(313, 86);
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.Size = new System.Drawing.Size(100, 23);
+            this.txtStatus.TabIndex = 11;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(313, 68);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(42, 15);
+            this.lblStatus.TabIndex = 10;
+            this.lblStatus.Text = "Status:";
             // 
             // txtCurrency
             // 
@@ -239,29 +303,50 @@ namespace P1FormsApp
             // 
             // gbSummary
             // 
+            this.gbSummary.Controls.Add(this.txtPortfolioCount);
+            this.gbSummary.Controls.Add(this.lblPortfolioCount);
+            this.gbSummary.Controls.Add(this.lblFirmAverage);
+            this.gbSummary.Controls.Add(this.txtAverageValue);
             this.gbSummary.Location = new System.Drawing.Point(294, 354);
             this.gbSummary.Name = "gbSummary";
             this.gbSummary.Size = new System.Drawing.Size(427, 120);
             this.gbSummary.TabIndex = 2;
             this.gbSummary.TabStop = false;
-            this.gbSummary.Text = "Portfolio Summary";
+            this.gbSummary.Text = "Firm Summary";
             // 
-            // txtStatus
+            // txtPortfolioCount
             // 
-            this.txtStatus.Enabled = false;
-            this.txtStatus.Location = new System.Drawing.Point(313, 86);
-            this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(100, 23);
-            this.txtStatus.TabIndex = 11;
+            this.txtPortfolioCount.Enabled = false;
+            this.txtPortfolioCount.Location = new System.Drawing.Point(6, 37);
+            this.txtPortfolioCount.Name = "txtPortfolioCount";
+            this.txtPortfolioCount.Size = new System.Drawing.Size(100, 23);
+            this.txtPortfolioCount.TabIndex = 3;
             // 
-            // lblStatus
+            // lblPortfolioCount
             // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(313, 68);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(42, 15);
-            this.lblStatus.TabIndex = 10;
-            this.lblStatus.Text = "Status:";
+            this.lblPortfolioCount.AutoSize = true;
+            this.lblPortfolioCount.Location = new System.Drawing.Point(6, 19);
+            this.lblPortfolioCount.Name = "lblPortfolioCount";
+            this.lblPortfolioCount.Size = new System.Drawing.Size(92, 15);
+            this.lblPortfolioCount.TabIndex = 2;
+            this.lblPortfolioCount.Text = "Portfolio Count:";
+            // 
+            // lblFirmAverage
+            // 
+            this.lblFirmAverage.AutoSize = true;
+            this.lblFirmAverage.Location = new System.Drawing.Point(6, 73);
+            this.lblFirmAverage.Name = "lblFirmAverage";
+            this.lblFirmAverage.Size = new System.Drawing.Size(113, 15);
+            this.lblFirmAverage.TabIndex = 1;
+            this.lblFirmAverage.Text = "Average Cash Value:";
+            // 
+            // txtAverageValue
+            // 
+            this.txtAverageValue.Enabled = false;
+            this.txtAverageValue.Location = new System.Drawing.Point(6, 91);
+            this.txtAverageValue.Name = "txtAverageValue";
+            this.txtAverageValue.Size = new System.Drawing.Size(100, 23);
+            this.txtAverageValue.TabIndex = 0;
             // 
             // PortfolioViewer
             // 
@@ -272,6 +357,8 @@ namespace P1FormsApp
             this.Name = "PortfolioViewer";
             this.gbSelected.ResumeLayout(false);
             this.gbSelected.PerformLayout();
+            this.gbSummary.ResumeLayout(false);
+            this.gbSummary.PerformLayout();
             this.ResumeLayout(false);
 
         }
