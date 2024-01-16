@@ -14,5 +14,11 @@ namespace Services.DataHandling
         public List<Portfolio.PorfolioAccount> GetPortfoliosForFirm(string _FirmID, string _AuthenticationToken);
 
         public Portfolio.PortfolioSummary GetPortfoliosSummary(string _FirmID, string _ID, string _AuthenticationToken);
+
+        public decimal GetFirmAverageCashValue(List<Portfolio.PorfolioAccount> _Portfolios);
+
+        public decimal GetTotalPositionValue(Portfolio.PortfolioSummary _PortfolioSummary);
+
+        public decimal GetTotalAccountsValue(Portfolio.PortfolioSummary _PortfolioSummary);
     }
 }

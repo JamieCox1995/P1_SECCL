@@ -45,7 +45,18 @@ namespace P1FormsApp
         private Label lblPortfolioCount;
         private Label lblFirmAverage;
         private TextBox txtAverageValue;
-
+        private TextBox txtFirmID;
+        private Label label1;
+        private TextBox txtID;
+        private Label lblID;
+        private GroupBox gbAccounts;
+        private GroupBox gbPositions;
+        private ListView lvPositions;
+        private ListView lvAccounts;
+        private Label lblPositionTotal;
+        private TextBox txtTotalAccountsValue;
+        private Label lblTotalAccountsValue;
+        private TextBox txtTotalPositionValue;
         private int _selectedPortfolioIndex = -1;
 
         public PortfolioViewer(IMiddleware _Middleware)
@@ -97,6 +108,9 @@ namespace P1FormsApp
             // Updating the information for the selected account.
             Portfolio.PortfolioSummary summary = _middleware.GetPortfoliosSummary(_firmID, selectedAccount.ID, _authToken.Token);
 
+            txtID.Text = summary.ID;
+            txtFirmID.Text = summary.FirmID;
+
             txtFirstName.Text = summary.FirstName;
             txtSurname.Text = summary.Surname;
 
@@ -104,7 +118,21 @@ namespace P1FormsApp
 
             txtLanguage.Text = summary.Language;
             txtCurrency.Text = summary.Currency;
-            txtStatus.Text = summary.Status;
+            txtStatus.Text = summary.Status;            
+
+            BindPositions(summary);
+            BindAccounts(summary);
+        }
+
+        private void BindPositions(Portfolio.PortfolioSummary _Portfolio)
+        {
+            txtTotalPositionValue.Text = _middleware.GetTotalPositionValue(_Portfolio).ToString("0,0.00");
+        }
+
+        private void BindAccounts(Portfolio.PortfolioSummary _Portfolio)
+        {
+            txtTotalAccountsValue.Text = _middleware.GetTotalAccountsValue(_Portfolio).ToString("0,0.00");
+
         }
 
         /// <summary>
@@ -124,13 +152,16 @@ namespace P1FormsApp
         /// </summary>
         private void LoadPorfolios()
         {
+            // Clearing the items from the list view, so that we dont have duplicated data.
+            lvPortfolios.Items.Clear();
+
             // On load, we want to call the middleware to get the list of portfolios and bind them to the list view.
             _accounts = _middleware.GetPortfoliosForFirm(_firmID, _authToken.Token);
 
             // Iterating over all of the accounts and adding them to the list view to be displayed.
             foreach (Portfolio.PorfolioAccount account in _accounts)
             {
-                lvPortfolios.Items.Add(account.Name);
+                lvPortfolios.Items.Add(new ListViewItem($"{ account.ID } - { account.Name }"));
             }
         }
 
@@ -140,6 +171,10 @@ namespace P1FormsApp
         private void BindFirmSummary()
         {
             txtPortfolioCount.Text = _accounts.Count.ToString();
+
+            decimal average = _middleware.GetFirmAverageCashValue(_accounts);
+            txtAverageValue.Text = $"{average.ToString("0,0.00")}";
+
         }
 
         /// <summary>
@@ -149,6 +184,18 @@ namespace P1FormsApp
         {
             this.lvPortfolios = new System.Windows.Forms.ListView();
             this.gbSelected = new System.Windows.Forms.GroupBox();
+            this.gbAccounts = new System.Windows.Forms.GroupBox();
+            this.txtTotalAccountsValue = new System.Windows.Forms.TextBox();
+            this.lblTotalAccountsValue = new System.Windows.Forms.Label();
+            this.lvAccounts = new System.Windows.Forms.ListView();
+            this.gbPositions = new System.Windows.Forms.GroupBox();
+            this.txtTotalPositionValue = new System.Windows.Forms.TextBox();
+            this.lblPositionTotal = new System.Windows.Forms.Label();
+            this.lvPositions = new System.Windows.Forms.ListView();
+            this.txtFirmID = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtID = new System.Windows.Forms.TextBox();
+            this.lblID = new System.Windows.Forms.Label();
             this.txtStatus = new System.Windows.Forms.TextBox();
             this.lblStatus = new System.Windows.Forms.Label();
             this.txtCurrency = new System.Windows.Forms.TextBox();
@@ -167,19 +214,29 @@ namespace P1FormsApp
             this.lblFirmAverage = new System.Windows.Forms.Label();
             this.txtAverageValue = new System.Windows.Forms.TextBox();
             this.gbSelected.SuspendLayout();
+            this.gbAccounts.SuspendLayout();
+            this.gbPositions.SuspendLayout();
             this.gbSummary.SuspendLayout();
             this.SuspendLayout();
             // 
             // lvPortfolios
             // 
             this.lvPortfolios.Location = new System.Drawing.Point(12, 12);
+            this.lvPortfolios.MultiSelect = false;
             this.lvPortfolios.Name = "lvPortfolios";
             this.lvPortfolios.Size = new System.Drawing.Size(276, 462);
             this.lvPortfolios.TabIndex = 0;
             this.lvPortfolios.UseCompatibleStateImageBehavior = false;
+            this.lvPortfolios.View = System.Windows.Forms.View.List;
             // 
             // gbSelected
             // 
+            this.gbSelected.Controls.Add(this.gbAccounts);
+            this.gbSelected.Controls.Add(this.gbPositions);
+            this.gbSelected.Controls.Add(this.txtFirmID);
+            this.gbSelected.Controls.Add(this.label1);
+            this.gbSelected.Controls.Add(this.txtID);
+            this.gbSelected.Controls.Add(this.lblID);
             this.gbSelected.Controls.Add(this.txtStatus);
             this.gbSelected.Controls.Add(this.lblStatus);
             this.gbSelected.Controls.Add(this.txtCurrency);
@@ -199,10 +256,118 @@ namespace P1FormsApp
             this.gbSelected.TabStop = false;
             this.gbSelected.Text = "Selected Portfolio";
             // 
+            // gbAccounts
+            // 
+            this.gbAccounts.Controls.Add(this.txtTotalAccountsValue);
+            this.gbAccounts.Controls.Add(this.lblTotalAccountsValue);
+            this.gbAccounts.Controls.Add(this.lvAccounts);
+            this.gbAccounts.Location = new System.Drawing.Point(215, 162);
+            this.gbAccounts.Name = "gbAccounts";
+            this.gbAccounts.Size = new System.Drawing.Size(206, 168);
+            this.gbAccounts.TabIndex = 17;
+            this.gbAccounts.TabStop = false;
+            this.gbAccounts.Text = "Accounts";
+            // 
+            // txtTotalAccountsValue
+            // 
+            this.txtTotalAccountsValue.Enabled = false;
+            this.txtTotalAccountsValue.Location = new System.Drawing.Point(121, 16);
+            this.txtTotalAccountsValue.Name = "txtTotalAccountsValue";
+            this.txtTotalAccountsValue.Size = new System.Drawing.Size(76, 23);
+            this.txtTotalAccountsValue.TabIndex = 4;
+            // 
+            // lblTotalAccountsValue
+            // 
+            this.lblTotalAccountsValue.AutoSize = true;
+            this.lblTotalAccountsValue.Location = new System.Drawing.Point(3, 19);
+            this.lblTotalAccountsValue.Name = "lblTotalAccountsValue";
+            this.lblTotalAccountsValue.Size = new System.Drawing.Size(114, 15);
+            this.lblTotalAccountsValue.TabIndex = 3;
+            this.lblTotalAccountsValue.Text = "Total Account Value:";
+            // 
+            // lvAccounts
+            // 
+            this.lvAccounts.Location = new System.Drawing.Point(6, 45);
+            this.lvAccounts.Name = "lvAccounts";
+            this.lvAccounts.Size = new System.Drawing.Size(192, 117);
+            this.lvAccounts.TabIndex = 0;
+            this.lvAccounts.UseCompatibleStateImageBehavior = false;
+            // 
+            // gbPositions
+            // 
+            this.gbPositions.Controls.Add(this.txtTotalPositionValue);
+            this.gbPositions.Controls.Add(this.lblPositionTotal);
+            this.gbPositions.Controls.Add(this.lvPositions);
+            this.gbPositions.Location = new System.Drawing.Point(6, 162);
+            this.gbPositions.Name = "gbPositions";
+            this.gbPositions.Size = new System.Drawing.Size(206, 168);
+            this.gbPositions.TabIndex = 16;
+            this.gbPositions.TabStop = false;
+            this.gbPositions.Text = "Positions";
+            // 
+            // txtTotalPositionValue
+            // 
+            this.txtTotalPositionValue.Enabled = false;
+            this.txtTotalPositionValue.Location = new System.Drawing.Point(124, 16);
+            this.txtTotalPositionValue.Name = "txtTotalPositionValue";
+            this.txtTotalPositionValue.Size = new System.Drawing.Size(76, 23);
+            this.txtTotalPositionValue.TabIndex = 2;
+            // 
+            // lblPositionTotal
+            // 
+            this.lblPositionTotal.AutoSize = true;
+            this.lblPositionTotal.Location = new System.Drawing.Point(6, 19);
+            this.lblPositionTotal.Name = "lblPositionTotal";
+            this.lblPositionTotal.Size = new System.Drawing.Size(112, 15);
+            this.lblPositionTotal.TabIndex = 1;
+            this.lblPositionTotal.Text = "Total Position Value:";
+            // 
+            // lvPositions
+            // 
+            this.lvPositions.Location = new System.Drawing.Point(5, 45);
+            this.lvPositions.Name = "lvPositions";
+            this.lvPositions.Size = new System.Drawing.Size(195, 117);
+            this.lvPositions.TabIndex = 0;
+            this.lvPositions.UseCompatibleStateImageBehavior = false;
+            // 
+            // txtFirmID
+            // 
+            this.txtFirmID.Enabled = false;
+            this.txtFirmID.Location = new System.Drawing.Point(112, 37);
+            this.txtFirmID.Name = "txtFirmID";
+            this.txtFirmID.Size = new System.Drawing.Size(100, 23);
+            this.txtFirmID.TabIndex = 15;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(112, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 15);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Firm ID:";
+            // 
+            // txtID
+            // 
+            this.txtID.Enabled = false;
+            this.txtID.Location = new System.Drawing.Point(6, 37);
+            this.txtID.Name = "txtID";
+            this.txtID.Size = new System.Drawing.Size(100, 23);
+            this.txtID.TabIndex = 13;
+            // 
+            // lblID
+            // 
+            this.lblID.AutoSize = true;
+            this.lblID.Location = new System.Drawing.Point(6, 19);
+            this.lblID.Name = "lblID";
+            this.lblID.Size = new System.Drawing.Size(21, 15);
+            this.lblID.TabIndex = 12;
+            this.lblID.Text = "ID:";
+            // 
             // txtStatus
             // 
             this.txtStatus.Enabled = false;
-            this.txtStatus.Location = new System.Drawing.Point(313, 86);
+            this.txtStatus.Location = new System.Drawing.Point(313, 37);
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.Size = new System.Drawing.Size(100, 23);
             this.txtStatus.TabIndex = 11;
@@ -210,7 +375,7 @@ namespace P1FormsApp
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(313, 68);
+            this.lblStatus.Location = new System.Drawing.Point(313, 19);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(42, 15);
             this.lblStatus.TabIndex = 10;
@@ -219,7 +384,7 @@ namespace P1FormsApp
             // txtCurrency
             // 
             this.txtCurrency.Enabled = false;
-            this.txtCurrency.Location = new System.Drawing.Point(74, 86);
+            this.txtCurrency.Location = new System.Drawing.Point(74, 133);
             this.txtCurrency.Name = "txtCurrency";
             this.txtCurrency.Size = new System.Drawing.Size(58, 23);
             this.txtCurrency.TabIndex = 9;
@@ -227,7 +392,7 @@ namespace P1FormsApp
             // lblCurrency
             // 
             this.lblCurrency.AutoSize = true;
-            this.lblCurrency.Location = new System.Drawing.Point(74, 68);
+            this.lblCurrency.Location = new System.Drawing.Point(74, 115);
             this.lblCurrency.Name = "lblCurrency";
             this.lblCurrency.Size = new System.Drawing.Size(58, 15);
             this.lblCurrency.TabIndex = 8;
@@ -236,7 +401,7 @@ namespace P1FormsApp
             // txtLanguage
             // 
             this.txtLanguage.Enabled = false;
-            this.txtLanguage.Location = new System.Drawing.Point(6, 86);
+            this.txtLanguage.Location = new System.Drawing.Point(6, 133);
             this.txtLanguage.Name = "txtLanguage";
             this.txtLanguage.Size = new System.Drawing.Size(62, 23);
             this.txtLanguage.TabIndex = 7;
@@ -244,7 +409,7 @@ namespace P1FormsApp
             // lblLanguage
             // 
             this.lblLanguage.AutoSize = true;
-            this.lblLanguage.Location = new System.Drawing.Point(6, 68);
+            this.lblLanguage.Location = new System.Drawing.Point(6, 115);
             this.lblLanguage.Name = "lblLanguage";
             this.lblLanguage.Size = new System.Drawing.Size(62, 15);
             this.lblLanguage.TabIndex = 6;
@@ -253,7 +418,7 @@ namespace P1FormsApp
             // txtClientType
             // 
             this.txtClientType.Enabled = false;
-            this.txtClientType.Location = new System.Drawing.Point(313, 37);
+            this.txtClientType.Location = new System.Drawing.Point(313, 84);
             this.txtClientType.Name = "txtClientType";
             this.txtClientType.Size = new System.Drawing.Size(100, 23);
             this.txtClientType.TabIndex = 5;
@@ -261,7 +426,7 @@ namespace P1FormsApp
             // lblClientType
             // 
             this.lblClientType.AutoSize = true;
-            this.lblClientType.Location = new System.Drawing.Point(313, 19);
+            this.lblClientType.Location = new System.Drawing.Point(313, 66);
             this.lblClientType.Name = "lblClientType";
             this.lblClientType.Size = new System.Drawing.Size(68, 15);
             this.lblClientType.TabIndex = 4;
@@ -270,7 +435,7 @@ namespace P1FormsApp
             // txtSurname
             // 
             this.txtSurname.Enabled = false;
-            this.txtSurname.Location = new System.Drawing.Point(112, 37);
+            this.txtSurname.Location = new System.Drawing.Point(112, 84);
             this.txtSurname.Name = "txtSurname";
             this.txtSurname.Size = new System.Drawing.Size(100, 23);
             this.txtSurname.TabIndex = 3;
@@ -278,7 +443,7 @@ namespace P1FormsApp
             // lblSurname
             // 
             this.lblSurname.AutoSize = true;
-            this.lblSurname.Location = new System.Drawing.Point(112, 19);
+            this.lblSurname.Location = new System.Drawing.Point(112, 66);
             this.lblSurname.Name = "lblSurname";
             this.lblSurname.Size = new System.Drawing.Size(57, 15);
             this.lblSurname.TabIndex = 2;
@@ -287,7 +452,7 @@ namespace P1FormsApp
             // txtFirstName
             // 
             this.txtFirstName.Enabled = false;
-            this.txtFirstName.Location = new System.Drawing.Point(6, 37);
+            this.txtFirstName.Location = new System.Drawing.Point(6, 84);
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(100, 23);
             this.txtFirstName.TabIndex = 1;
@@ -295,7 +460,7 @@ namespace P1FormsApp
             // lblFirstName
             // 
             this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Location = new System.Drawing.Point(6, 19);
+            this.lblFirstName.Location = new System.Drawing.Point(6, 66);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(67, 15);
             this.lblFirstName.TabIndex = 0;
@@ -357,6 +522,10 @@ namespace P1FormsApp
             this.Name = "PortfolioViewer";
             this.gbSelected.ResumeLayout(false);
             this.gbSelected.PerformLayout();
+            this.gbAccounts.ResumeLayout(false);
+            this.gbAccounts.PerformLayout();
+            this.gbPositions.ResumeLayout(false);
+            this.gbPositions.PerformLayout();
             this.gbSummary.ResumeLayout(false);
             this.gbSummary.PerformLayout();
             this.ResumeLayout(false);

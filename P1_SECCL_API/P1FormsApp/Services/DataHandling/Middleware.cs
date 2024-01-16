@@ -45,6 +45,44 @@ namespace Services.DataHandling
             return new Authentication.AuthenticationToken(authData.Token, authData.UserName); ;
         }
 
+        public decimal GetFirmAverageCashValue(List<Portfolio.PorfolioAccount> _Portfolios)
+        {
+            decimal average = 0;
+
+            for(int index = 0; index < _Portfolios.Count; index++)
+            {
+                average += _Portfolios[index].CurrentValue;
+            }
+
+            average = average / _Portfolios.Count;
+
+            return average;
+        }
+
+        public decimal GetTotalPositionValue(Portfolio.PortfolioSummary _PortfolioSummary) 
+        { 
+            decimal total = 0;
+
+            foreach(Portfolio.PortfolioPosition position in _PortfolioSummary.Positions)
+            {
+                total += position.CurrentValue;
+            }
+
+            return total;
+        }
+
+        public decimal GetTotalAccountsValue(Portfolio.PortfolioSummary _PortfolioSummary)
+        {
+            decimal total = 0;
+
+            foreach (Portfolio.SubAccount account in _PortfolioSummary.Accounts)
+            {
+                total += account.CurrentValue;
+            }
+
+            return total;
+        }
+
         /// <summary>
         /// Loads all of the portfolios for a given FirmID. This gives portfolios at a header level.
         /// </summary>
