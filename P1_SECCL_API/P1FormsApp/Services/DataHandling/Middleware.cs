@@ -45,6 +45,11 @@ namespace Services.DataHandling
             return new Authentication.AuthenticationToken(authData.Token, authData.UserName); ;
         }
 
+        /// <summary>
+        /// Returns the average Current Value for a list of Portfolios.
+        /// </summary>
+        /// <param name="_Portfolios">Portfolios to get the average for.</param>
+        /// <returns>Decimal value for the average</returns>
         public decimal GetFirmAverageCashValue(List<Portfolio.PorfolioAccount> _Portfolios)
         {
             decimal average = 0;
@@ -59,6 +64,11 @@ namespace Services.DataHandling
             return average;
         }
 
+        /// <summary>
+        /// Returns the total value for all Positions for a Portfolio
+        /// </summary>
+        /// <param name="_PortfolioSummary">Portfolio which we want the total for</param>
+        /// <returns>Returns decimal value for the total</returns>
         public decimal GetTotalPositionValue(Portfolio.PortfolioSummary _PortfolioSummary) 
         { 
             decimal total = 0;
@@ -71,6 +81,11 @@ namespace Services.DataHandling
             return total;
         }
 
+        /// <summary>
+        /// Returns the total value for all Accounts for a Portfolio
+        /// </summary>
+        /// <param name="_PortfolioSummary">Portfolio which we want the total for</param>
+        /// <returns>Returns decimal value for the total</returns>
         public decimal GetTotalAccountsValue(Portfolio.PortfolioSummary _PortfolioSummary)
         {
             decimal total = 0;
@@ -108,7 +123,8 @@ namespace Services.DataHandling
 
             List<Portfolio.PorfolioAccount> accounts = JsonConvert.DeserializeObject<List<Portfolio.PorfolioAccount>>(data.Data.ToString());
 
-            return accounts;
+            // Getting 3 of the portfolios and returning them
+            return accounts.Take(3).ToList();
         }
 
 

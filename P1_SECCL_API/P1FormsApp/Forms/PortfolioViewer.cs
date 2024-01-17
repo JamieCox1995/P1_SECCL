@@ -51,12 +51,12 @@ namespace P1FormsApp
         private Label lblID;
         private GroupBox gbAccounts;
         private GroupBox gbPositions;
-        private ListView lvPositions;
         private ListView lvAccounts;
         private Label lblPositionTotal;
         private TextBox txtTotalAccountsValue;
         private Label lblTotalAccountsValue;
         private TextBox txtTotalPositionValue;
+        private ListView lvPositions;
         private int _selectedPortfolioIndex = -1;
 
         public PortfolioViewer(IMiddleware _Middleware)
@@ -124,14 +124,59 @@ namespace P1FormsApp
             BindAccounts(summary);
         }
 
+        /// <summary>
+        /// Binds the "Positions" section of the GUI
+        /// </summary>
+        /// <param name="_Portfolio"></param>
         private void BindPositions(Portfolio.PortfolioSummary _Portfolio)
         {
+            // Clearing old data from List View
+            lvPositions.Items.Clear();
+
+            // Setting the total TB
             txtTotalPositionValue.Text = _middleware.GetTotalPositionValue(_Portfolio).ToString("0,0.00");
+
+            // Iterating over all of the Positions
+            foreach(Portfolio.PortfolioPosition pos in _Portfolio.Positions)
+            {
+                string listViewDisplay = "";
+
+                // If the Position does not have an asset name, we will jsut display it like this: "CASH - 0.00"
+                if (string.IsNullOrWhiteSpace(pos.AssetName))
+                {
+                    listViewDisplay = $"{pos.PositionType} - {pos.CurrentValue.ToString("0,0.00")}";
+                }
+                else
+                {
+                    // Otherwise, we will display it like this: "TYPE - NAME - 0.00"
+                    listViewDisplay = $"{pos.PositionType} - {pos.AssetName} - {pos.CurrentValue.ToString("0,0.00")}";
+                }
+
+                lvPositions.Items.Add(listViewDisplay);
+            }
         }
 
+        /// <summary>
+        /// Binding the "Account" section of the GUI
+        /// </summary>
+        /// <param name="_Portfolio"></param>
         private void BindAccounts(Portfolio.PortfolioSummary _Portfolio)
         {
+            // Clearing out the List View
+            lvAccounts.Items.Clear();
+
+            // Setting the total
             txtTotalAccountsValue.Text = _middleware.GetTotalAccountsValue(_Portfolio).ToString("0,0.00");
+
+            // Iterating over and creating a new List View Item to display text like: "ACCOUNT NAME - TYPE - 0.00"
+            foreach (Portfolio.SubAccount acc in _Portfolio.Accounts)
+            {
+                string listViewDisplay = "";
+
+                listViewDisplay = $"{acc.Name} - {acc.WrapperType} - {acc.CurrentValue.ToString("0,0.00")}";
+
+                lvAccounts.Items.Add(listViewDisplay);
+            }
 
         }
 
@@ -191,7 +236,6 @@ namespace P1FormsApp
             this.gbPositions = new System.Windows.Forms.GroupBox();
             this.txtTotalPositionValue = new System.Windows.Forms.TextBox();
             this.lblPositionTotal = new System.Windows.Forms.Label();
-            this.lvPositions = new System.Windows.Forms.ListView();
             this.txtFirmID = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtID = new System.Windows.Forms.TextBox();
@@ -213,6 +257,7 @@ namespace P1FormsApp
             this.lblPortfolioCount = new System.Windows.Forms.Label();
             this.lblFirmAverage = new System.Windows.Forms.Label();
             this.txtAverageValue = new System.Windows.Forms.TextBox();
+            this.lvPositions = new System.Windows.Forms.ListView();
             this.gbSelected.SuspendLayout();
             this.gbAccounts.SuspendLayout();
             this.gbPositions.SuspendLayout();
@@ -292,12 +337,13 @@ namespace P1FormsApp
             this.lvAccounts.Size = new System.Drawing.Size(192, 117);
             this.lvAccounts.TabIndex = 0;
             this.lvAccounts.UseCompatibleStateImageBehavior = false;
+            this.lvAccounts.View = System.Windows.Forms.View.List;
             // 
             // gbPositions
             // 
+            this.gbPositions.Controls.Add(this.lvPositions);
             this.gbPositions.Controls.Add(this.txtTotalPositionValue);
             this.gbPositions.Controls.Add(this.lblPositionTotal);
-            this.gbPositions.Controls.Add(this.lvPositions);
             this.gbPositions.Location = new System.Drawing.Point(6, 162);
             this.gbPositions.Name = "gbPositions";
             this.gbPositions.Size = new System.Drawing.Size(206, 168);
@@ -321,14 +367,6 @@ namespace P1FormsApp
             this.lblPositionTotal.Size = new System.Drawing.Size(112, 15);
             this.lblPositionTotal.TabIndex = 1;
             this.lblPositionTotal.Text = "Total Position Value:";
-            // 
-            // lvPositions
-            // 
-            this.lvPositions.Location = new System.Drawing.Point(5, 45);
-            this.lvPositions.Name = "lvPositions";
-            this.lvPositions.Size = new System.Drawing.Size(195, 117);
-            this.lvPositions.TabIndex = 0;
-            this.lvPositions.UseCompatibleStateImageBehavior = false;
             // 
             // txtFirmID
             // 
@@ -512,6 +550,15 @@ namespace P1FormsApp
             this.txtAverageValue.Name = "txtAverageValue";
             this.txtAverageValue.Size = new System.Drawing.Size(100, 23);
             this.txtAverageValue.TabIndex = 0;
+            // 
+            // lvPositions
+            // 
+            this.lvPositions.Location = new System.Drawing.Point(6, 45);
+            this.lvPositions.Name = "lvPositions";
+            this.lvPositions.Size = new System.Drawing.Size(194, 117);
+            this.lvPositions.TabIndex = 3;
+            this.lvPositions.UseCompatibleStateImageBehavior = false;
+            this.lvPositions.View = System.Windows.Forms.View.List;
             // 
             // PortfolioViewer
             // 
