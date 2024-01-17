@@ -3,6 +3,8 @@
 This project was created using Visual Studio 2022 and .NET 6.0. Please install the latest version of Visual Studio to run the application.
 The project is provided as a VS Solution and can be run through the debugger. A .EXE has also been provided in the solution which can be run.
 
+## Running the Application
+You can either run the .EXE file located within the "Build" folder which will run the applciation without any debugging, or you can run the app through VS to enable debugging.
 
 ## Project Structure
 This repo contains a single C# WinForms solution called "P1FormsApp" used to create the application, and a "Build" folder which contains an executable file for a built version of the application. Within the solution there are 3 folders; Classes, Forms, and Services.
