@@ -25,10 +25,5 @@ namespace P1_SECCL_API.Classes
             public string Token { get; set; }
             public string UserName { get; set; }
         }
-
-        public struct AuthenticationObject
-        {
-            public AuthData Data { get; set; }
-        }
     }
 }
