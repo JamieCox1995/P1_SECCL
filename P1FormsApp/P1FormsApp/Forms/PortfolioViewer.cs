@@ -234,6 +234,7 @@ namespace P1FormsApp
             this.lblTotalAccountsValue = new System.Windows.Forms.Label();
             this.lvAccounts = new System.Windows.Forms.ListView();
             this.gbPositions = new System.Windows.Forms.GroupBox();
+            this.lvPositions = new System.Windows.Forms.ListView();
             this.txtTotalPositionValue = new System.Windows.Forms.TextBox();
             this.lblPositionTotal = new System.Windows.Forms.Label();
             this.txtFirmID = new System.Windows.Forms.TextBox();
@@ -257,7 +258,6 @@ namespace P1FormsApp
             this.lblPortfolioCount = new System.Windows.Forms.Label();
             this.lblFirmAverage = new System.Windows.Forms.Label();
             this.txtAverageValue = new System.Windows.Forms.TextBox();
-            this.lvPositions = new System.Windows.Forms.ListView();
             this.gbSelected.SuspendLayout();
             this.gbAccounts.SuspendLayout();
             this.gbPositions.SuspendLayout();
@@ -276,6 +276,7 @@ namespace P1FormsApp
             // 
             // gbSelected
             // 
+            this.gbSelected.AutoSize = true;
             this.gbSelected.Controls.Add(this.gbAccounts);
             this.gbSelected.Controls.Add(this.gbPositions);
             this.gbSelected.Controls.Add(this.txtFirmID);
@@ -296,19 +297,20 @@ namespace P1FormsApp
             this.gbSelected.Controls.Add(this.lblFirstName);
             this.gbSelected.Location = new System.Drawing.Point(294, 12);
             this.gbSelected.Name = "gbSelected";
-            this.gbSelected.Size = new System.Drawing.Size(427, 336);
+            this.gbSelected.Size = new System.Drawing.Size(427, 368);
             this.gbSelected.TabIndex = 1;
             this.gbSelected.TabStop = false;
             this.gbSelected.Text = "Selected Portfolio";
             // 
             // gbAccounts
             // 
+            this.gbAccounts.AutoSize = true;
             this.gbAccounts.Controls.Add(this.txtTotalAccountsValue);
             this.gbAccounts.Controls.Add(this.lblTotalAccountsValue);
             this.gbAccounts.Controls.Add(this.lvAccounts);
             this.gbAccounts.Location = new System.Drawing.Point(215, 162);
             this.gbAccounts.Name = "gbAccounts";
-            this.gbAccounts.Size = new System.Drawing.Size(206, 168);
+            this.gbAccounts.Size = new System.Drawing.Size(206, 184);
             this.gbAccounts.TabIndex = 17;
             this.gbAccounts.TabStop = false;
             this.gbAccounts.Text = "Accounts";
@@ -341,15 +343,25 @@ namespace P1FormsApp
             // 
             // gbPositions
             // 
+            this.gbPositions.AutoSize = true;
             this.gbPositions.Controls.Add(this.lvPositions);
             this.gbPositions.Controls.Add(this.txtTotalPositionValue);
             this.gbPositions.Controls.Add(this.lblPositionTotal);
             this.gbPositions.Location = new System.Drawing.Point(6, 162);
             this.gbPositions.Name = "gbPositions";
-            this.gbPositions.Size = new System.Drawing.Size(206, 168);
+            this.gbPositions.Size = new System.Drawing.Size(206, 184);
             this.gbPositions.TabIndex = 16;
             this.gbPositions.TabStop = false;
             this.gbPositions.Text = "Positions";
+            // 
+            // lvPositions
+            // 
+            this.lvPositions.Location = new System.Drawing.Point(6, 45);
+            this.lvPositions.Name = "lvPositions";
+            this.lvPositions.Size = new System.Drawing.Size(194, 117);
+            this.lvPositions.TabIndex = 3;
+            this.lvPositions.UseCompatibleStateImageBehavior = false;
+            this.lvPositions.View = System.Windows.Forms.View.List;
             // 
             // txtTotalPositionValue
             // 
@@ -506,13 +518,14 @@ namespace P1FormsApp
             // 
             // gbSummary
             // 
+            this.gbSummary.AutoSize = true;
             this.gbSummary.Controls.Add(this.txtPortfolioCount);
             this.gbSummary.Controls.Add(this.lblPortfolioCount);
             this.gbSummary.Controls.Add(this.lblFirmAverage);
             this.gbSummary.Controls.Add(this.txtAverageValue);
             this.gbSummary.Location = new System.Drawing.Point(294, 354);
             this.gbSummary.Name = "gbSummary";
-            this.gbSummary.Size = new System.Drawing.Size(427, 120);
+            this.gbSummary.Size = new System.Drawing.Size(427, 136);
             this.gbSummary.TabIndex = 2;
             this.gbSummary.TabStop = false;
             this.gbSummary.Text = "Firm Summary";
@@ -551,17 +564,11 @@ namespace P1FormsApp
             this.txtAverageValue.Size = new System.Drawing.Size(100, 23);
             this.txtAverageValue.TabIndex = 0;
             // 
-            // lvPositions
-            // 
-            this.lvPositions.Location = new System.Drawing.Point(6, 45);
-            this.lvPositions.Name = "lvPositions";
-            this.lvPositions.Size = new System.Drawing.Size(194, 117);
-            this.lvPositions.TabIndex = 3;
-            this.lvPositions.UseCompatibleStateImageBehavior = false;
-            this.lvPositions.View = System.Windows.Forms.View.List;
-            // 
             // PortfolioViewer
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(733, 486);
             this.Controls.Add(this.gbSummary);
             this.Controls.Add(this.gbSelected);
@@ -576,6 +583,7 @@ namespace P1FormsApp
             this.gbSummary.ResumeLayout(false);
             this.gbSummary.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
     }
